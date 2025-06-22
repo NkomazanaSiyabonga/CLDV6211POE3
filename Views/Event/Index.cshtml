@@ -1,0 +1,123 @@
+﻿@model CloudDevelopmentPOE1.Models.EventFilterViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+    <h2>Index</h2>
+
+    <form asp-action="Index" method="get" class="form-inline mb-3">
+        <div class="form-group mr-2">
+            <label for="EventType">Event Type</label>
+        <select asp-for="EventTypeID" asp-items="Model.EventTypes" class="form-control">
+            <option value="">-- All Types --</option>
+        </select>
+
+        </div>
+
+        <div class="form-group mr-2">
+            <label for="VenueId">Venue</label>
+            <select asp-for="VenueId" asp-items="Model.Venues" class="form-control ml-2">
+                <option value="">-- All Venues --</option>
+            </select>
+        </div>
+
+        <div class="form-group mr-2">
+            <label for="StartDate">Start Date</label>
+            <input asp-for="StartDate" class="form-control ml-2" type="date" />
+        </div>
+
+        <div class="form-group mr-2">
+            <label for="EndDate">End Date</label>
+            <input asp-for="EndDate" class="form-control ml-2" type="date" />
+        </div>
+
+        <button type="submit" class="btn btn-primary mr-2">Filter</button>
+        <a asp-action="Index" class="btn btn-secondary">Clear</a>
+
+    <div class="form-group mr-2 form-check">
+        <input asp-for="OnlyAvailableVenues" class="form-check-input" type="checkbox" />
+        <label asp-for="OnlyAvailableVenues" class="form-check-label">Only show available venues</label>
+    </div>
+
+    </form>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>EventID</th>
+                <th>EventName</th>
+                <th>EventDate</th>
+                <th>Description</th>
+                <th>Venue</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var ev in Model.FilteredEvents)
+        {
+                <tr>
+                    <td>@ev.EventId</td>
+                    <td>@ev.EventName</td>
+                    <td>@ev.EventDate</td>
+                    <td>@ev.Description</td>
+                    <td>@ev.Venue?.Name</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@ev.EventId">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@ev.EventId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@ev.EventId">Delete</a>
+                    </td>
+                </tr>
+        }
+        </tbody>
+    </table>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.FilteredEvents[0].EventName)</th>
+            <th>@Html.DisplayNameFor(model => model.FilteredEvents[0].Description)</th>
+            <th>@Html.DisplayNameFor(model => model.FilteredEvents[0].EventDate)</th>
+            <th>@Html.DisplayNameFor(model => model.FilteredEvents[0].Venue.Name)</th>
+            <th>@Html.DisplayNameFor(model => model.FilteredEvents[0].EventType.Name)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.FilteredEvents)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EventName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EventDate)
+                </td>
+                <td>@item.Venue?.Name</td> -
+                <td>@item.EventType?.Name</td> 
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.EventId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.EventId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.EventId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
